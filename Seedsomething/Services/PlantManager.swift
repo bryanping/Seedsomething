@@ -15,11 +15,12 @@ class PlantManager: NSObject, ObservableObject {
     @Published var grass: Grass?
     @Published var plantRecords: [PlantRecord] = []
     @Published var stores: [Store] = []
-    
+
     private let locationManager = CLLocationManager()
     @Published var currentLocation: CLLocationCoordinate2D?
-    
-    private init() {
+
+    private override init() {
+        super.init()
         setupLocationManager()
         loadData()
     }

@@ -238,4 +238,6 @@ struct PlantRecordRow: View {
 
 #Preview {
     HomeView()
+        .environmentObject(AuthManager.shared)
+        .environmentObject(PlantManager.shared)
 }

@@ -167,4 +167,6 @@ struct HandDrawnSproutView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(AuthManager.shared)
+        .environmentObject(PlantManager.shared)
 }

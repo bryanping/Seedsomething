@@ -15,7 +15,7 @@ class AuthManager: NSObject, ObservableObject {
     @Published var currentUser: User?
     @Published var isAuthenticated: Bool = false
     
-    private init() {
+    private override init() {
         // 從本地儲存載入使用者資料
         loadUser()
     }
