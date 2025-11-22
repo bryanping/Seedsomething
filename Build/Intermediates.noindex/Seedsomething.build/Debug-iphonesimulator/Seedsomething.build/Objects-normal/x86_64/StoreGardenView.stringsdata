@@ -1,0 +1,112 @@
+{
+  "source": "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/StoreGardenView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "錯誤",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "你可以為你的實體店鋪建立一座小花園，讓來店客人掃碼種草。",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "店家名稱 *",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "輸入店家名稱",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "地址",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "輸入地址（選填）",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "建立店家花園",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "確定",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "總種草次數：%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "店家專屬 QR Code",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "請將此 QR 貼在店內，讓客人掃碼種草",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "儲存 QR 圖片",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "編輯店家資訊",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 208
+        }
+      }
+    ]
+  },
+  "version": 1
+}
