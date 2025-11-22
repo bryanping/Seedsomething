@@ -13,12 +13,13 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		A2FA19DF2ED1912E00A4614D /* Exceptions for "Seedsomething" folder in "Seedsomething" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Assets.xcassets,
-				"Preview Content/Preview Assets.xcassets",
-			);
-			target = A2A151CB2ED184C900026594 /* Seedsomething */;
-		};
+                        membershipExceptions = (
+                                Assets.xcassets,
+                                "Preview Content/Preview Assets.xcassets",
+                                Info.plist,
+                        );
+                        target = A2A151CB2ED184C900026594 /* Seedsomething */;
+                };
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */

@@ -150,4 +150,5 @@ struct PlantRecordCard: View {
 
 #Preview {
     MapView()
+        .environmentObject(PlantManager.shared)
 }
