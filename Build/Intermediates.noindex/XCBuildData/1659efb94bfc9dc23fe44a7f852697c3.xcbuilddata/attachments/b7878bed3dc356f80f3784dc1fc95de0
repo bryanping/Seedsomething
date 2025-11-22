@@ -1,0 +1,168 @@
+{
+  "" : {
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Seedsomething-master.dia",
+    "emit-module-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Seedsomething-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Seedsomething-master-emit-module.dia",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Seedsomething-master.swiftdeps"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/AppDelegate.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AppDelegate~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/ContentView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Models/Grass.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Grass~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Models/PlantRecord.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantRecord~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Models/Store.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/Store~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Models/User.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/User~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/SceneDelegate.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SceneDelegate~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/SeedsomethingApp.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/SeedsomethingApp~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Services/AuthManager.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/AuthManager~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Services/PlantManager.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/PlantManager~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Utils/BrandColors.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/BrandColors~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/HomeView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/HomeView~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/MapView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/MapView~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/ProfileView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/ProfileView~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/QRScannerView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/QRScannerView~partial.swiftmodule"
+  },
+  "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/StoreGardenView.swift" : {
+    "const-values" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.swiftconstvalues",
+    "dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.d",
+    "diagnostics" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.dia",
+    "index-unit-output-path" : "/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.o",
+    "llvm-bc" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.bc",
+    "object" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.o",
+    "swift-dependencies" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView.swiftdeps",
+    "swiftmodule" : "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Build/Intermediates.noindex/Seedsomething.build/Debug-iphoneos/Seedsomething.build/Objects-normal/arm64/StoreGardenView~partial.swiftmodule"
+  }
+}

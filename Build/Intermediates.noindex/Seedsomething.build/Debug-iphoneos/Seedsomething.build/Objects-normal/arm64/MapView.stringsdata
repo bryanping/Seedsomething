@@ -1,0 +1,32 @@
+{
+  "source": "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/MapView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "一般打卡",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "店家掃碼",
+        "location": {
+          "startingColumn": 77,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld 次",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 118
+        }
+      }
+    ]
+  },
+  "version": 1
+}

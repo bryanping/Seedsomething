@@ -1,0 +1,144 @@
+{
+  "source": "/Users/linping/Desktop/活動歷/App項目文檔/種點什麼/Seedsomething/Seedsomething/Views/HomeView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "錯誤",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 176
+        }
+      },
+      {
+        "comment": "",
+        "key": "早安，%@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "今天也要努力發芽 🌱",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 33
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lv.%lld",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "EXP %lld / %lld",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "開始你的種草之旅吧！",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 90
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日種草狀態",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日尚未打卡",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日已種草 ✓",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "已連續 %lld 天",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日已打卡",
+        "location": {
+          "startingColumn": 86,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日種草打卡",
+        "location": {
+          "startingColumn": 106,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "最近種草記錄",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "還沒有種草記錄",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 158
+        }
+      },
+      {
+        "comment": "",
+        "key": "確定",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "一般打卡",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 209
+        }
+      },
+      {
+        "comment": "",
+        "key": "店家掃碼",
+        "location": {
+          "startingColumn": 73,
+          "startingLine": 209
+        }
+      }
+    ]
+  },
+  "version": 1
+}
