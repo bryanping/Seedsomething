@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A27C10B52ED8AD84005C8CD2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A27C10B42ED8AD84005C8CD2 /* FirebaseAnalytics */; };
+		A29726702ED7EEAD001428E6 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A297266F2ED7EEAD001428E6 /* FirebaseAuth */; };
+		A29726722ED7EEAD001428E6 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A29726712ED7EEAD001428E6 /* FirebaseCore */; };
+		A29726742ED7EEAD001428E6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A29726732ED7EEAD001428E6 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A2A151CC2ED184C900026594 /* Seedsomething.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seedsomething.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -14,8 +21,9 @@
 		A2FA19DF2ED1912E00A4614D /* Exceptions for "Seedsomething" folder in "Seedsomething" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Assets.xcassets,
+				Info.plist,
 				"Preview Content/Preview Assets.xcassets",
+				SceneDelegate.swift,
 			);
 			target = A2A151CB2ED184C900026594 /* Seedsomething */;
 		};
@@ -37,16 +45,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A29726722ED7EEAD001428E6 /* FirebaseCore in Frameworks */,
+				A29726702ED7EEAD001428E6 /* FirebaseAuth in Frameworks */,
+				A27C10B52ED8AD84005C8CD2 /* FirebaseAnalytics in Frameworks */,
+				A29726742ED7EEAD001428E6 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A27C10B32ED8AD84005C8CD2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A2A151C32ED184C900026594 = {
 			isa = PBXGroup;
 			children = (
 				A2A151CE2ED184C900026594 /* Seedsomething */,
+				A27C10B32ED8AD84005C8CD2 /* Frameworks */,
 				A2A151CD2ED184C900026594 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,6 +99,10 @@
 			);
 			name = Seedsomething;
 			packageProductDependencies = (
+				A297266F2ED7EEAD001428E6 /* FirebaseAuth */,
+				A29726712ED7EEAD001428E6 /* FirebaseCore */,
+				A29726732ED7EEAD001428E6 /* FirebaseFirestore */,
+				A27C10B42ED8AD84005C8CD2 /* FirebaseAnalytics */,
 			);
 			productName = Seedsomething;
 			productReference = A2A151CC2ED184C900026594 /* Seedsomething.app */;
@@ -108,6 +132,9 @@
 			);
 			mainGroup = A2A151C32ED184C900026594;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A2A151CD2ED184C900026594 /* Products */;
 			projectDirPath = "";
@@ -265,8 +292,9 @@
 				DEVELOPMENT_TEAM = K6N38A5JS6;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "種點什麼";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Seedsomething/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Seedsomething;
 				INFOPLIST_KEY_NSCameraUsageDescription = "我們需要相機權限來掃描店家 QR Code";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "我們需要您的位置來記錄您的種草足跡";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "我們需要您的位置來記錄您的種草足跡";
@@ -309,8 +337,9 @@
 				DEVELOPMENT_TEAM = K6N38A5JS6;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "種點什麼";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Seedsomething/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Seedsomething;
 				INFOPLIST_KEY_NSCameraUsageDescription = "我們需要相機權限來掃描店家 QR Code";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "我們需要您的位置來記錄您的種草足跡";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "我們需要您的位置來記錄您的種草足跡";
@@ -363,6 +392,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A27C10B42ED8AD84005C8CD2 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		A297266F2ED7EEAD001428E6 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		A29726712ED7EEAD001428E6 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		A29726732ED7EEAD001428E6 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A29726382ED7E47B001428E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A2A151C42ED184C900026594 /* Project object */;
 }

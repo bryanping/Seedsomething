@@ -20,14 +20,17 @@ struct PlantRecord: Identifiable, Codable {
     let coordinate: Coordinate
     let storeId: String?
     let createdAt: Date
+    let grassLevel: Int? // 记录时的草等级（用于地图展示）
     
-    init(id: String = UUID().uuidString, userId: String, type: PlantRecordType, coordinate: Coordinate, storeId: String? = nil, createdAt: Date = Date()) {
+    
+    init(id: String = UUID().uuidString, userId: String, type: PlantRecordType, coordinate: Coordinate, storeId: String? = nil, createdAt: Date = Date(), grassLevel: Int? = nil) {
         self.id = id
         self.userId = userId
         self.type = type
         self.coordinate = coordinate
         self.storeId = storeId
         self.createdAt = createdAt
+        self.grassLevel = grassLevel
     }
 }
 

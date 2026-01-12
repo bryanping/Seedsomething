@@ -13,7 +13,10 @@ struct ProfileView: View {
     @State private var showQRScanner = false
     @State private var showStoreGarden = false
     @State private var showEditNickname = false
+    @State private var showSettings = false // 新增 Settings 状态
+    @State private var showFriendsList = false // 新增 FriendsList 状态
     @State private var newNickname = ""
+    @State private var isPlantAnimating = false // 控制植物点击动画
     
     var body: some View {
         NavigationView {
@@ -25,8 +28,36 @@ struct ProfileView: View {
                     VStack(spacing: 25) {
                         // 頭像與基本資訊
                         VStack(spacing: 15) {
-                            HandDrawnSproutView()
-                                .frame(width: 80, height: 80)
+                            if let grass = plantManager.grass {
+                                ZStack {
+                                    // 背景光晕
+                                    Circle()
+                                        .fill(Color.brandLightGreen.opacity(0.2))
+                                        .frame(width: 100, height: 100)
+                                        .scaleEffect(isPlantAnimating ? 1.1 : 1.0)
+                                        .animation(.easeInOut(duration: 0.3), value: isPlantAnimating)
+                                    
+                                    // 植物图鉴（随机生成的植物）
+                                    if let species = grass.plantSpecies {
+                                        PlantImageView(plantSpecies: species, level: grass.level, size: 80)
+                                            .scaleEffect(isPlantAnimating ? 1.2 : 1.0)
+                                            .animation(.spring(response: 0.4, dampingFraction: 0.6), value: isPlantAnimating)
+                                            .onTapGesture {
+                                                // 点击播放小动画
+                                                isPlantAnimating = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    isPlantAnimating = false
+                                                }
+                                            }
+                                        
+                                        // 植物名称
+                                        Text(species.displayName)
+                                            .font(.custom("PingFang TC", size: 12))
+                                            .foregroundColor(.brandDarkGreen)
+                                            .padding(.top, -5)
+                                    } 
+                                }
+                            } 
                             
                             Text(authManager.currentUser?.nickname ?? "草")
                                 .font(.custom("PingFang TC", size: 24))
@@ -49,8 +80,55 @@ struct ProfileView: View {
                         }
                         .padding(.horizontal, 20)
                         
+                        // 成就系统
+                        VStack(alignment: .leading, spacing: 15) {
+                            Text("成就獎章")
+                                .font(.custom("PingFang TC", size: 20))
+                                .fontWeight(.medium)
+                                .foregroundColor(.brandDarkGray)
+                                .padding(.horizontal, 20)
+                            
+                            if plantManager.achievements.isEmpty {
+                                // 初始化默认成就
+                                ForEach([
+                                    AchievementType.consecutive7Days,
+                                    AchievementType.consecutive30Days,
+                                    AchievementType.summerGrowth,
+                                    AchievementType.firstFriend,
+                                    AchievementType.friendLike,
+                                    AchievementType.storePlant
+                                ], id: \.self) { type in
+                                    AchievementBadgeView(
+                                        achievement: Achievement(
+                                            userId: authManager.currentUser?.id ?? "",
+                                            type: type
+                                        ),
+                                        plantManager: plantManager
+                                    )
+                                    .padding(.horizontal, 20)
+                                }
+                            } else {
+                                ForEach(plantManager.achievements) { achievement in
+                                    AchievementBadgeView(
+                                        achievement: achievement,
+                                        plantManager: plantManager
+                                    )
+                                    .padding(.horizontal, 20)
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        
                         // 功能列表
                         VStack(spacing: 12) {
+                            ProfileMenuItem(
+                                icon: "person.2.fill",
+                                title: "我的好友",
+                                color: .blue
+                            ) {
+                                showFriendsList = true
+                            }
+                            
                             ProfileMenuItem(
                                 icon: "qrcode.viewfinder",
                                 title: "掃描店家 QR 種草",
@@ -81,7 +159,7 @@ struct ProfileView: View {
                                 title: "設定",
                                 color: .brandDarkGray.opacity(0.6)
                             ) {
-                                // TODO: 設定頁面
+                                showSettings = true
                             }
                             
                             ProfileMenuItem(
@@ -100,7 +178,11 @@ struct ProfileView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showQRScanner) {
-                QRScannerView()
+                AddFriendQRScannerView { _ in } //修改内容：使用改名后的 View，闭包参数正常
+            }
+
+            .sheet(isPresented: $showFriendsList) {
+                FriendsListView()
             }
             .sheet(isPresented: $showStoreGarden) {
                 StoreGardenView()
@@ -112,6 +194,9 @@ struct ProfileView: View {
                         authManager.currentUser = user
                     }
                 }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
             }
         }
     }
@@ -178,6 +263,89 @@ struct ProfileMenuItem: View {
                     .shadow(color: Color.brandGrayGreen.opacity(0.1), radius: 5, x: 0, y: 2)
             )
         }
+    }
+}
+
+// 成就奖章视图（带LV等级）
+struct AchievementBadgeView: View {
+    let achievement: Achievement
+    @ObservedObject var plantManager: PlantManager
+    
+    var body: some View {
+        HStack(spacing: 15) {
+            // 奖章图标（带LV标识）
+            ZStack {
+                Circle()
+                    .fill(achievement.isUnlocked ? Color.brandLightGreen.opacity(0.2) : Color.brandGrayGreen.opacity(0.1))
+                    .frame(width: 60, height: 60)
+                
+                VStack(spacing: 2) {
+                    Image(systemName: achievement.isUnlocked ? "star.fill" : "star")
+                        .foregroundColor(achievement.isUnlocked ? .brandLightGreen : .brandGrayGreen)
+                        .font(.title3)
+                    
+                    // LV等级标识
+                    Text("LV\(achievement.level)")
+                        .font(.custom("PingFang TC", size: 10))
+                        .fontWeight(.bold)
+                        .foregroundColor(achievement.isUnlocked ? .brandDarkGreen : .brandDarkGray.opacity(0.5))
+                }
+            }
+            
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(achievement.type.displayName)
+                        .font(.custom("PingFang TC", size: 16))
+                        .fontWeight(.medium)
+                        .foregroundColor(achievement.isUnlocked ? .brandDarkGray : .brandDarkGray.opacity(0.6))
+                    
+                    if achievement.isUnlocked {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.brandLightGreen)
+                            .font(.system(size: 16))
+                    }
+                }
+                
+                Text(achievement.type.description)
+                    .font(.custom("PingFang TC", size: 12))
+                    .foregroundColor(.brandDarkGray.opacity(0.6))
+                
+                // 进度条
+                if !achievement.isUnlocked {
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color.brandGrayGreen.opacity(0.2))
+                                .frame(height: 6)
+                            
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color.brandLightGreen)
+                                .frame(
+                                    width: geometry.size.width * min(1.0, Double(achievement.progress) / Double(achievement.target)),
+                                    height: 6
+                                )
+                        }
+                    }
+                    .frame(height: 6)
+                    
+                    Text("進度: \(achievement.progress)/\(achievement.target)")
+                        .font(.custom("PingFang TC", size: 10))
+                        .foregroundColor(.brandDarkGray.opacity(0.5))
+                } else {
+                    Text("已達成 LV\(achievement.level)")
+                        .font(.custom("PingFang TC", size: 12))
+                        .foregroundColor(.brandLightGreen)
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(15)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(achievement.isUnlocked ? Color.brandLightGreen.opacity(0.05) : Color.white)
+                .shadow(color: Color.brandGrayGreen.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
     }
 }
 

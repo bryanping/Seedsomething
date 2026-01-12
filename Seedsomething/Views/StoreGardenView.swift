@@ -5,9 +5,9 @@
 //  Created by 林平 on 2025/11/22.
 //
 
-import SwiftUI
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import SwiftUI
 import UIKit
 
 struct StoreGardenView: View {
@@ -19,13 +19,13 @@ struct StoreGardenView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var createdStore: Store?
-    
+
     var body: some View {
         NavigationView {
             ZStack {
                 Color.brandCream
                     .ignoresSafeArea()
-                
+
                 if let store = createdStore {
                     // 已建立店家花園的畫面
                     StoreGardenInfoView(store: store) {
@@ -41,12 +41,12 @@ struct StoreGardenView: View {
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 30)
                                 .padding(.top, 30)
-                            
+
                             VStack(alignment: .leading, spacing: 12) {
                                 Text("店家名稱 *")
                                     .font(.custom("PingFang TC", size: 14))
                                     .foregroundColor(.brandDarkGray)
-                                
+
                                 TextField("輸入店家名稱", text: $storeName)
                                     .font(.custom("PingFang TC", size: 16))
                                     .padding()
@@ -56,12 +56,12 @@ struct StoreGardenView: View {
                                     )
                             }
                             .padding(.horizontal, 20)
-                            
+
                             VStack(alignment: .leading, spacing: 12) {
                                 Text("地址")
                                     .font(.custom("PingFang TC", size: 14))
                                     .foregroundColor(.brandDarkGray)
-                                
+
                                 TextField("輸入地址（選填）", text: $address)
                                     .font(.custom("PingFang TC", size: 16))
                                     .padding()
@@ -71,7 +71,7 @@ struct StoreGardenView: View {
                                     )
                             }
                             .padding(.horizontal, 20)
-                            
+
                             Button(action: {
                                 createStore()
                             }) {
@@ -81,13 +81,16 @@ struct StoreGardenView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 50)
-                                    .background(storeName.isEmpty ? Color.brandGrayGreen : Color.brandLightGreen)
+                                    .background(
+                                        storeName.isEmpty
+                                            ? Color.brandGrayGreen : Color.brandLightGreen
+                                    )
                                     .cornerRadius(12)
                             }
                             .disabled(storeName.isEmpty || isCreating)
                             .padding(.horizontal, 20)
                             .padding(.top, 20)
-                            
+
                             Spacer()
                         }
                     }
@@ -95,30 +98,32 @@ struct StoreGardenView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .alert("錯誤", isPresented: $showError) {
-                Button("確定", role: .cancel) { }
+                Button("確定", role: .cancel) {}
             } message: {
                 Text(errorMessage)
             }
         }
     }
-    
+
     private func createStore() {
         guard !storeName.isEmpty else { return }
-        
+
         isCreating = true
-        
-        // 使用當前位置或預設位置
-        let coordinate: Coordinate
-        if let location = plantManager.currentLocation {
-            coordinate = Coordinate(location: location)
-        } else {
-            // 預設台北
-            coordinate = Coordinate(latitude: 25.0330, longitude: 121.5654)
+
+        // 使用當前位置
+        guard let location = plantManager.currentLocation else {
+            errorMessage = "無法獲取當前位置，請開啟定位後再試。"
+            showError = true
+            isCreating = false
+            return
         }
-        
+
+        let coordinate = Coordinate(location: location)
+
         Task {
             do {
-                let store = try await plantManager.createStore(name: storeName, coordinate: coordinate)
+                let store = try await plantManager.createStore(
+                    name: storeName, coordinate: coordinate)
                 createdStore = store
             } catch {
                 errorMessage = error.localizedDescription
@@ -133,7 +138,7 @@ struct StoreGardenInfoView: View {
     let store: Store
     let onEdit: () -> Void
     @State private var qrCodeImage: UIImage?
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
@@ -143,20 +148,20 @@ struct StoreGardenInfoView: View {
                         .font(.custom("PingFang TC", size: 24))
                         .fontWeight(.bold)
                         .foregroundColor(.brandDarkGray)
-                    
+
                     Text("總種草次數：\(store.totalPlantCount)")
                         .font(.custom("PingFang TC", size: 16))
                         .foregroundColor(.brandDarkGreen)
                 }
                 .padding(.top, 30)
-                
+
                 // QR Code
                 VStack(spacing: 15) {
                     Text("店家專屬 QR Code")
                         .font(.custom("PingFang TC", size: 18))
                         .fontWeight(.medium)
                         .foregroundColor(.brandDarkGray)
-                    
+
                     if let qrImage = qrCodeImage {
                         Image(uiImage: qrImage)
                             .resizable()
@@ -175,7 +180,7 @@ struct StoreGardenInfoView: View {
                         ProgressView()
                             .frame(width: 250, height: 250)
                     }
-                    
+
                     Text("請將此 QR 貼在店內，讓客人掃碼種草")
                         .font(.custom("PingFang TC", size: 14))
                         .foregroundColor(.brandDarkGray.opacity(0.7))
@@ -183,7 +188,7 @@ struct StoreGardenInfoView: View {
                         .padding(.horizontal, 30)
                 }
                 .padding(.vertical, 20)
-                
+
                 // 按鈕
                 VStack(spacing: 15) {
                     Button(action: {
@@ -204,7 +209,7 @@ struct StoreGardenInfoView: View {
                         .cornerRadius(12)
                     }
                     .disabled(qrCodeImage == nil)
-                    
+
                     Button(action: onEdit) {
                         Text("編輯店家資訊")
                             .font(.custom("PingFang TC", size: 16))
@@ -225,22 +230,21 @@ struct StoreGardenInfoView: View {
             generateQRCode()
         }
     }
-    
+
     private func generateQRCode() {
         let context = CIContext()
         let filter = CIFilter.qrCodeGenerator()
-        
+
         let data = store.qrCodeToken.data(using: .utf8)
         filter.setValue(data, forKey: "inputMessage")
-        
+
         if let outputImage = filter.outputImage {
             let transform = CGAffineTransform(scaleX: 10, y: 10)
             let scaledImage = outputImage.transformed(by: transform)
-            
+
             if let cgImage = context.createCGImage(scaledImage, from: scaledImage.extent) {
                 qrCodeImage = UIImage(cgImage: cgImage)
             }
         }
     }
 }
-
