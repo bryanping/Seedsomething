@@ -51,17 +51,39 @@ PY
 )"
 
 echo "== Run agent =="
-openclaw agent --agent main -m "$PROMPT"
+openclaw agent --agent main -m "$PROMPT"  # //修改内容：固定 agent=main，避免 session/timeout 問題
 
-echo "== Local verify (always) =="
+echo "== Verify/build gate =="
+BUILD_OK=0  # //修改内容：只有成功才 commit
+
+echo "== Local verify (preferred) =="
 if [ -x "$ROOT/scripts/ai_verify.sh" ]; then
-  "$ROOT/scripts/ai_verify.sh" || true
+  if "$ROOT/scripts/ai_verify.sh"; then
+    BUILD_OK=1
+  else
+    echo "verify failed -> fallback build"
+  fi
 fi
 
-echo "== Fallback build =="
-if [ -x "$ROOT/scripts/ai_build.sh" ]; then
-  "$ROOT/scripts/ai_build.sh" || true
+echo "== Fallback build (iPhone 16) =="
+if [ "$BUILD_OK" -eq 0 ] && [ -x "$ROOT/scripts/ai_build.sh" ]; then
+  if "$ROOT/scripts/ai_build.sh"; then
+    BUILD_OK=1
+  fi
 fi
+
+if [ "$BUILD_OK" -eq 0 ]; then
+  echo "❌ verify/build 全部失敗，不 commit"
+  git status || true
+  exit 1  # //修改内容：失敗就停止，避免污染歷史
+fi
+
+echo "✅ BUILD OK"
+
+echo "== Auto commit =="
+# //修改内容：只 commit 追蹤檔案（避免把 .openclaw 一次全塞進 repo）
+git add -A :/  # 只對 repo 內追蹤/新增變更做 stage
+git commit -m "AI auto dev: $TASK" || echo "No changes to commit"
 
 echo "== Done =="
 git status || true
