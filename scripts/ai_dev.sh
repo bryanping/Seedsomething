@@ -49,8 +49,8 @@ task=os.environ["TASK_IN"]
 print(prompt.replace("__TASK_PLACEHOLDER__", task))
 PY
 )"
-# //修改内容：确保 main agent 存在
-openclaw agents list | rg -q '^- main ' || { echo "❌ openclaw agent main 不存在"; exit 2; }
+# //修改内容：不用 ripgrep，避免環境依賴
+openclaw agents list | grep -q '^- main ' || { echo "❌ openclaw agent main 不存在"; exit 2; }
 
 echo "== Run agent =="
 openclaw agent --agent main -m "$PROMPT"  # //修改内容：固定 agent=main，避免 session/timeout 問題
