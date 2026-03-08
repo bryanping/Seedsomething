@@ -17,6 +17,7 @@ class PlantManager: NSObject, ObservableObject {
 
     @Published var grass: Grass?
     @Published var plantRecords: [PlantRecord] = []  // 用户自己的记录
+    @Published var dailyPlantRecords: [String: DailyPlantRecord] = [:]  // 每日记录（按日期键）
     @Published var allUsersPlantRecords: [PlantRecord] = []  // 所有用户的公共记录（用于地图显示）
     @Published var friendPlantRecords: [PlantRecord] = []  // 朋友的打卡记录（永远可见）
     @Published var stores: [Store] = []
@@ -36,6 +37,22 @@ class PlantManager: NSObject, ObservableObject {
 
     // 每日种草次数限制
     private let dailyPlantLimit = 99
+
+    /// 今日已帮浇的公共草点 ID 集合（同一天不能重复浇同一草）
+    private var wateredPublicRecordIdsToday: Set<String> {
+        get {
+            let key = "plantManager.wateredPublicRecordIds." + DailyPlantRecord.dateKey(for: Date())
+            guard let data = UserDefaults.standard.data(forKey: key),
+                  let arr = try? JSONDecoder().decode([String].self, from: data) else { return [] }
+            return Set(arr)
+        }
+        set {
+            let key = "plantManager.wateredPublicRecordIds." + DailyPlantRecord.dateKey(for: Date())
+            if let data = try? JSONEncoder().encode(Array(newValue)) {
+                UserDefaults.standard.set(data, forKey: key)
+            }
+        }
+    }
 
     // 使用统一的 LocationManager（不再自己管理 CLLocationManager）
     // 位置更新由 LocationManager 统一管理，通过 MapView 的 onChange 同步
@@ -114,6 +131,13 @@ class PlantManager: NSObject, ObservableObject {
             self.grass = newGrass
         }
 
+        // 写入当日记录：已浇水（完整状态快照）
+        upsertTodayDailyRecord(
+            watered: true,
+            mood: grass?.mood,
+            dewEarned: grass?.hasDew,
+            growthDeltaToAdd: 1
+        )
         // 檢查成就
         checkAchievements()
 
@@ -180,31 +204,20 @@ class PlantManager: NSObject, ObservableObject {
             // 不抛出错误，允许继续执行
         }
 
-        // 更新草資料（只有第一次打卡才更新 lastCheckinAt）
+        // 更新草資料（第一次打卡用状态机浇水，同 day 只加次数与经验）
         if var currentGrass = grass {
-            // 微小成長（基礎）
-            currentGrass.addExp(1)
-
-            // 只有第一次打卡才更新 lastCheckinAt
             if !currentGrass.hasCheckedInToday {
-                currentGrass.lastCheckinAt = Date()
-                // 計算連續天數
-                currentGrass.consecutiveDays = calculateConsecutiveDays()
+                currentGrass.water()
+            } else {
+                currentGrass.totalCheckinCount += 1
             }
-
-            currentGrass.totalCheckinCount += 1
-
-            // 更新季節狀態
+            currentGrass.addExp(1)
             currentGrass.updateForSeason(Season.current())
-
             self.grass = currentGrass
         } else {
-            // 創建新的草
             var newGrass = Grass(userId: userId)
+            newGrass.water()
             newGrass.addExp(1)
-            newGrass.lastCheckinAt = Date()
-            newGrass.totalCheckinCount = 1
-            newGrass.consecutiveDays = 1
             newGrass.updateForSeason(Season.current())
             self.grass = newGrass
         }
@@ -215,6 +228,71 @@ class PlantManager: NSObject, ObservableObject {
         Task {
             await saveData()
         }
+    }
+
+    // MARK: - 帮它浇水（公共草点）
+
+    /// 帮某棵公共草浇水：草点 waterCount+1，自己露珠/成长+1，同一天不能重复浇同一草
+    func waterPublicRecord(_ record: PlantRecord) async throws {
+        guard AuthManager.shared.currentUser?.id != nil else {
+            throw PlantError.notAuthenticated
+        }
+        if wateredPublicRecordIdsToday.contains(record.id) {
+            throw PlantError.alreadyWateredThisGrassToday
+        }
+        var updated = record
+        updated.waterCount += 1
+        updatePlantRecordInLists(updated)
+        var set = wateredPublicRecordIdsToday
+        set.insert(record.id)
+        wateredPublicRecordIdsToday = set
+        try await FirebaseService.shared.updatePublicPlantRecord(updated)
+        if var currentGrass = grass {
+            currentGrass.addExp(1)
+            if currentGrass.consecutiveDays >= 30 { currentGrass.hasDew = true }
+            self.grass = currentGrass
+        }
+        await saveData()
+    }
+
+    func hasWateredPublicRecordToday(_ recordId: String) -> Bool {
+        wateredPublicRecordIdsToday.contains(recordId)
+    }
+
+    /// 更新本地 allUsersPlantRecords / friendPlantRecords 中的一条记录
+    func updatePlantRecordInLists(_ record: PlantRecord) {
+        if let i = allUsersPlantRecords.firstIndex(where: { $0.id == record.id }) {
+            allUsersPlantRecords[i] = record
+        }
+        if let i = friendPlantRecords.firstIndex(where: { $0.id == record.id }) {
+            friendPlantRecords[i] = record
+        }
+    }
+
+    /// 增加草点访问次数并持久化
+    func incrementVisitCount(for record: PlantRecord) {
+        var updated = record
+        updated.visitCount += 1
+        updatePlantRecordInLists(updated)
+        Task {
+            try? await FirebaseService.shared.updatePublicPlantRecord(updated)
+        }
+    }
+
+    /// 更新草点留言并持久化
+    func updateRecordMessage(_ record: PlantRecord, message: String?) {
+        var updated = record
+        updated.message = message
+        updatePlantRecordInLists(updated)
+        Task {
+            try? await FirebaseService.shared.updatePublicPlantRecord(updated)
+        }
+    }
+
+    /// 从本地列表获取已更新的草点（浇水/访问/留言后刷新详情用）
+    func plantRecord(byId id: String) -> PlantRecord? {
+        allUsersPlantRecords.first(where: { $0.id == id })
+            ?? friendPlantRecords.first(where: { $0.id == id })
     }
 
     // 獲取今日已種草次數
@@ -449,6 +527,8 @@ class PlantManager: NSObject, ObservableObject {
             stores[index].totalPlantCount += 1
         }
 
+        checkAchievements()
+
         Task {
             await saveData()
         }
@@ -480,8 +560,11 @@ class PlantManager: NSObject, ObservableObject {
     private func saveData() async {
         guard let userId = AuthManager.shared.currentUser?.id else { return }
 
+        // 先持久化到本地（修改即保存，重启不丢）
+        persistToLocalStore(userId: userId)
+
         do {
-            // 1. 保存所有数据到 Firebase
+            // 再同步到 Firebase（可选，网络失败不影响本地）
             if let grass = grass {
                 try await FirebaseService.shared.saveGrass(grass, userId: userId)
             }
@@ -493,36 +576,45 @@ class PlantManager: NSObject, ObservableObject {
             try await FirebaseService.shared.saveFriendInteractions(
                 friendInteractions, userId: userId)
 
-            // 2. 同时保存到 UserDefaults 作为本地缓存 (防止网络失败时丢失进度)
-            saveToLocalCache()
-
         } catch {
             print("保存数据到 Firebase 失敗: \(error.localizedDescription)")
-            // 即使网络失败，也要保存到本地
-            saveToLocalCache()
         }
     }
 
-    // 保存数据到本地缓存
-    private func saveToLocalCache() {
-        if let grass = grass, let encoded = try? JSONEncoder().encode(grass) {
-            UserDefaults.standard.set(encoded, forKey: "grass")
+    /// 持久化到 LocalStore（UserDefaults），App 启动会从这里加载
+    private func persistToLocalStore(userId: String) {
+        LocalStore.shared.saveAll(
+            grass: grass,
+            plantRecords: plantRecords,
+            dailyPlantRecords: dailyPlantRecords,
+            stores: stores,
+            tasks: tasks,
+            achievements: achievements,
+            friends: friends,
+            friendInteractions: friendInteractions,
+            userId: userId
+        )
+    }
+
+    /// 更新当日每日记录（浇水或任务完成时调用，写入完整状态快照）
+    private func upsertTodayDailyRecord(
+        watered: Bool = false,
+        taskDone: TaskType? = nil,
+        mood: GrassMood? = nil,
+        dewEarned: Bool? = nil,
+        growthDeltaToAdd: Int = 0
+    ) {
+        let today = Date()
+        let key = DailyPlantRecord.dateKey(for: today)
+        var record = dailyPlantRecords[key] ?? DailyPlantRecord(date: today)
+        if watered { record.watered = true }
+        if let t = taskDone, !record.tasksDone.contains(t) {
+            record.tasksDone.append(t)
         }
-        if let encoded = try? JSONEncoder().encode(plantRecords) {
-            UserDefaults.standard.set(encoded, forKey: "plantRecords")
-        }
-        if let encoded = try? JSONEncoder().encode(stores) {
-            UserDefaults.standard.set(encoded, forKey: "stores")
-        }
-        if let encoded = try? JSONEncoder().encode(tasks) {
-            UserDefaults.standard.set(encoded, forKey: "tasks")
-        }
-        if let encoded = try? JSONEncoder().encode(achievements) {
-            UserDefaults.standard.set(encoded, forKey: "achievements")
-        }
-        if let encoded = try? JSONEncoder().encode(friends) {
-            UserDefaults.standard.set(encoded, forKey: "friends")
-        }
+        if let m = mood { record.mood = m }
+        if let d = dewEarned { record.dewEarned = d }
+        record.growthDelta += growthDeltaToAdd
+        dailyPlantRecords[key] = record
     }
 
     // 計算連續打卡天數
@@ -573,6 +665,16 @@ class PlantManager: NSObject, ObservableObject {
                 self.grass = currentGrass
             }
 
+            // 写入当日记录：该任务已完成（完整状态快照）
+            upsertTodayDailyRecord(
+                taskDone: task.type,
+                mood: grass?.mood,
+                dewEarned: grass?.hasDew,
+                growthDeltaToAdd: task.type.expReward
+            )
+
+            checkAchievements()
+
             Task {
                 await saveData()
             }
@@ -580,7 +682,7 @@ class PlantManager: NSObject, ObservableObject {
     }
 
     // 檢查成就（支持LV等级系统）
-    private func checkAchievements() {
+    func checkAchievements() {
         guard let userId = AuthManager.shared.currentUser?.id,
             let currentGrass = grass
         else { return }
@@ -662,6 +764,14 @@ class PlantManager: NSObject, ObservableObject {
         }
     }
 
+    /// 重新計算成就進度並持久化（成就頁、進入 App 時可調用）
+    func refreshAchievements() {
+        checkAchievements()
+        Task {
+            await saveData()
+        }
+    }
+
     // 后台自动检测日常任务（隐藏功能，完成时自动加成长值）
     func checkDailyTasks() {
         guard let userId = AuthManager.shared.currentUser?.id else { return }
@@ -689,6 +799,14 @@ class PlantManager: NSObject, ObservableObject {
                     var updatedGrass = currentGrass
                     updatedGrass.addExp(task.type.expReward)
                     self.grass = updatedGrass
+
+                    // 写入当日记录（完整状态快照）
+                    upsertTodayDailyRecord(
+                        taskDone: .water,
+                        mood: self.grass?.mood,
+                        dewEarned: self.grass?.hasDew,
+                        growthDeltaToAdd: task.type.expReward
+                    )
                 }
             }
             // 其他任务需要用户主动完成，这里不做自动检测
@@ -718,6 +836,8 @@ class PlantManager: NSObject, ObservableObject {
 
         friends.append(friend)
 
+        checkAchievements()
+
         // 保存到 Firestore
         Task {
             do {
@@ -729,6 +849,7 @@ class PlantManager: NSObject, ObservableObject {
 
                     // 重新加载好友打卡记录
                     await loadFriendPlantRecords()
+                    await saveData()
                 }
             } catch {
                 print("保存好友失败: \(error)")
@@ -773,18 +894,9 @@ class PlantManager: NSObject, ObservableObject {
             self.friendInteractions.append(interaction)
         }
 
-        // 5. 检查互动成就
-        if type == .like {
-            // 简单计数，实际应该从服务器获取准确计数
-            let likeCount = friendInteractions.filter({ $0.type == .like }).count  // +1 is already added to list above
-            if likeCount >= 2 {
-                // 解锁成就逻辑 (简化)
-                if let index = achievements.firstIndex(where: {
-                    $0.type == .friendLike && !$0.isUnlocked
-                }) {
-                    achievements[index].unlock()
-                }
-            }
+        checkAchievements()
+        Task {
+            await saveData()
         }
     }
 
@@ -814,78 +926,103 @@ class PlantManager: NSObject, ObservableObject {
 
     func loadData() async {
         guard let userId = AuthManager.shared.currentUser?.id else {
-            // 如果用户未登录，尝试从 UserDefaults 迁移数据
-            await migrateFromUserDefaults()
+            // 未登录时尝试从本地加载（如上次登录过的数据）
+            await loadFromLocalStore(userId: nil)
             return
         }
 
-        do {
-            // 从 Firebase 加载所有数据
-            grass = try await FirebaseService.shared.loadGrass(userId: userId)
-            plantRecords = try await FirebaseService.shared.loadPlantRecords(userId: userId)
-            stores = try await FirebaseService.shared.loadStores(userId: userId)
-            tasks = try await FirebaseService.shared.loadTasks(userId: userId)
-            achievements = try await FirebaseService.shared.loadAchievements(userId: userId)
-            friends = try await FirebaseService.shared.loadFriends(userId: userId)
-            friendInteractions = try await FirebaseService.shared.loadFriendInteractions(
-                userId: userId)
+        // 先从本地加载，保证启动即有数据、重启不丢
+        await loadFromLocalStore(userId: userId)
 
-            // 如果 Firebase 没有数据，尝试从 UserDefaults 迁移
-            if grass == nil && plantRecords.isEmpty {
-                await migrateFromUserDefaults()
+        // 若该用户本地无数据，尝试从“未登录”时的本地数据迁移（首次登录场景）
+        if grass == nil && plantRecords.isEmpty {
+            let anon = LocalStore.shared.loadAll(userId: nil)
+            if anon.grass != nil || !anon.plantRecords.isEmpty {
+                grass = anon.grass
+                plantRecords = anon.plantRecords
+                dailyPlantRecords = anon.dailyPlantRecords
+                stores = anon.stores
+                tasks = anon.tasks.isEmpty ? [] : anon.tasks
+                achievements = anon.achievements.isEmpty ? [] : anon.achievements
+                friends = anon.friends
+                friendInteractions = anon.friendInteractions
+                persistToLocalStore(userId: userId)
             }
+        }
+
+        do {
+            // 再从 Firebase 拉取，若有则覆盖
+            let remoteGrass = try await FirebaseService.shared.loadGrass(userId: userId)
+            if remoteGrass != nil { grass = remoteGrass }
+            let remoteRecords = try await FirebaseService.shared.loadPlantRecords(userId: userId)
+            if !remoteRecords.isEmpty { plantRecords = remoteRecords }
+            let remoteStores = try await FirebaseService.shared.loadStores(userId: userId)
+            if !remoteStores.isEmpty { stores = remoteStores }
+            let remoteTasks = try await FirebaseService.shared.loadTasks(userId: userId)
+            if !remoteTasks.isEmpty { tasks = remoteTasks }
+            let remoteAchievements = try await FirebaseService.shared.loadAchievements(userId: userId)
+            if !remoteAchievements.isEmpty { achievements = remoteAchievements }
+            let remoteFriends = try await FirebaseService.shared.loadFriends(userId: userId)
+            if !remoteFriends.isEmpty { friends = remoteFriends }
+            let remoteInteractions = try await FirebaseService.shared.loadFriendInteractions(userId: userId)
+            if !remoteInteractions.isEmpty { friendInteractions = remoteInteractions }
         } catch {
-            print("从 Firebase 加载数据失败: \(error.localizedDescription)")
-            // 如果 Firebase 加载失败，尝试从 UserDefaults 加载
-            await migrateFromUserDefaults()
+            print("从 Firebase 加载数据失败: \(error.localizedDescription)，使用本地数据")
         }
     }
 
-    // 从 UserDefaults 迁移数据到 Firebase
-    private func migrateFromUserDefaults() async {
-        guard let userId = AuthManager.shared.currentUser?.id else { return }
+    /// 从 LocalStore 加载到内存（启动时调用，保证数据不丢）
+    private func loadFromLocalStore(userId: String?) {
+        var data = LocalStore.shared.loadAll(userId: userId)
+        // 兼容旧版 UserDefaults 键：若本地新 key 为空，尝试从旧 key 迁移一次
+        if data.grass == nil && data.plantRecords.isEmpty {
+            let migrated = migrateFromLegacyUserDefaults()
+            if migrated.grass != nil { data.grass = migrated.grass }
+            if !migrated.plantRecords.isEmpty { data.plantRecords = migrated.plantRecords }
+            if !migrated.stores.isEmpty { data.stores = migrated.stores }
+            if !migrated.tasks.isEmpty { data.tasks = migrated.tasks }
+            if !migrated.achievements.isEmpty { data.achievements = migrated.achievements }
+            if !migrated.friends.isEmpty { data.friends = migrated.friends }
+            if migrated.grass != nil || !migrated.plantRecords.isEmpty {
+                LocalStore.shared.saveAll(
+                    grass: data.grass, plantRecords: data.plantRecords,
+                    dailyPlantRecords: data.dailyPlantRecords, stores: data.stores,
+                    tasks: data.tasks, achievements: data.achievements,
+                    friends: data.friends, friendInteractions: data.friendInteractions,
+                    userId: userId)
+            }
+        }
+        grass = data.grass
+        plantRecords = data.plantRecords
+        dailyPlantRecords = data.dailyPlantRecords
+        stores = data.stores
+        tasks = data.tasks.isEmpty ? [] : data.tasks
+        achievements = data.achievements.isEmpty ? [] : data.achievements
+        friends = data.friends
+        friendInteractions = data.friendInteractions
+    }
 
-        // 从 UserDefaults 加载数据
-        if let data = UserDefaults.standard.data(forKey: "grass"),
-            let decoded = try? JSONDecoder().decode(Grass.self, from: data)
-        {
-            grass = decoded
-        }
-        if let data = UserDefaults.standard.data(forKey: "plantRecords"),
-            let decoded = try? JSONDecoder().decode([PlantRecord].self, from: data)
-        {
-            plantRecords = decoded
-        }
-        if let data = UserDefaults.standard.data(forKey: "stores"),
-            let decoded = try? JSONDecoder().decode([Store].self, from: data)
-        {
-            stores = decoded
-        }
-        if let data = UserDefaults.standard.data(forKey: "tasks"),
-            let decoded = try? JSONDecoder().decode([UserTask].self, from: data)
-        {
-            tasks = decoded
-        }
-        if let data = UserDefaults.standard.data(forKey: "achievements"),
-            let decoded = try? JSONDecoder().decode([Achievement].self, from: data)
-        {
-            achievements = decoded
-        }
-        if let data = UserDefaults.standard.data(forKey: "friends"),
-            let decoded = try? JSONDecoder().decode([Friend].self, from: data)
-        {
-            friends = decoded
-        }
-
-        // 如果有数据，保存到 Firebase
-        if grass != nil || !plantRecords.isEmpty {
-            await saveData()
-
-            // 迁移完成后，清除 UserDefaults（可选）
-            // UserDefaults.standard.removeObject(forKey: "grass")
-            // UserDefaults.standard.removeObject(forKey: "plantRecords")
-            // ...
-        }
+    /// 从旧版 UserDefaults 键（grass, plantRecords 等）读取一次
+    private func migrateFromLegacyUserDefaults() -> LocalStore.LoadedData {
+        let dec = JSONDecoder()
+        dec.dateDecodingStrategy = .secondsSince1970
+        var data = LocalStore.LoadedData(
+            grass: nil, plantRecords: [], dailyPlantRecords: [:],
+            stores: [], tasks: [], achievements: [], friends: [], friendInteractions: []
+        )
+        if let d = UserDefaults.standard.data(forKey: "grass"),
+           let g = try? dec.decode(Grass.self, from: d) { data.grass = g }
+        if let d = UserDefaults.standard.data(forKey: "plantRecords"),
+           let r = try? dec.decode([PlantRecord].self, from: d) { data.plantRecords = r }
+        if let d = UserDefaults.standard.data(forKey: "stores"),
+           let s = try? dec.decode([Store].self, from: d) { data.stores = s }
+        if let d = UserDefaults.standard.data(forKey: "tasks"),
+           let t = try? dec.decode([UserTask].self, from: d) { data.tasks = t }
+        if let d = UserDefaults.standard.data(forKey: "achievements"),
+           let a = try? dec.decode([Achievement].self, from: d) { data.achievements = a }
+        if let d = UserDefaults.standard.data(forKey: "friends"),
+           let f = try? dec.decode([Friend].self, from: d) { data.friends = f }
+        return data
     }
 
     // MARK: - Mutation Logic (Miracle Trigger)
@@ -967,6 +1104,7 @@ enum PlantError: LocalizedError {
     case alreadyCheckedInToday
     case storeNotFound
     case dailyLimitReached
+    case alreadyWateredThisGrassToday
 
     var errorDescription: String? {
         switch self {
@@ -980,6 +1118,8 @@ enum PlantError: LocalizedError {
             return "找不到店家"
         case .dailyLimitReached:
             return "今日已達99次種草上限"
+        case .alreadyWateredThisGrassToday:
+            return "今日已為這棵草澆過水了"
         }
     }
 }

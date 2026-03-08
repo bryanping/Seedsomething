@@ -155,18 +155,21 @@ struct HomeView: View {
                             // 成长信息（持续显示，不随浇水状态改变）
                             VStack(spacing: 12) {
                                 if let grass = plantManager.grass {
-                                    // 草龄和连续天数
+                                    // 草龄、连续天数、阶段
                                     HStack(spacing: 15) {
                                         Label(
                                             "草龄 \(grass.ageInDays) 天", systemImage: "calendar")
                                         Label(
-                                            "连续 \(grass.consecutiveDays) 天",
+                                            "连续 \(grass.streak) 天",
                                             systemImage: "flame.fill")
+                                        Text(grass.stage.displayName)
+                                            .font(.custom("PingFang TC", size: 12))
+                                            .foregroundColor(.brandDarkGray.opacity(0.7))
                                     }
                                     .font(.custom("PingFang TC", size: 12))
                                     .foregroundColor(.brandDarkGray.opacity(0.7))
 
-                                    // 小草 mood（天气状态）
+                                    // 当前状态：需要水 / 状态好
                                     HStack(spacing: 5) {
                                         Text(grass.mood.emoji)
                                         Text(grass.mood.displayName)

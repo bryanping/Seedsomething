@@ -25,6 +25,9 @@ class AuthManager: NSObject, ObservableObject {
     @Published var currentUser: User?
     @Published var isAuthenticated: Bool = false
 
+    /// 若為 true，下一次 Apple 授權完成後會執行「連結帳號」而非登入
+    private var isLinkingApple: Bool = false
+
     private var authStateListener: AuthStateDidChangeListenerHandle?
     private var currentNonce: String? = nil
 
@@ -139,6 +142,82 @@ class AuthManager: NSObject, ObservableObject {
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }
 
+    // MARK: - 帳號綁定（多登入方式）
+
+    /// 已綁定的登入方式對應顯示名稱
+    var linkedAuthProviderNames: [(id: String, displayName: String)] {
+        guard let user = Auth.auth().currentUser else { return [] }
+        return user.providerData
+            .map { info in (id: info.providerID, displayName: authProviderDisplayName(info.providerID)) }
+            .filter { $0.displayName != "" }
+    }
+
+    /// 是否已綁定指定方式
+    func isLinked(providerId: String) -> Bool {
+        Auth.auth().currentUser?.providerData.contains { $0.providerID == providerId } ?? false
+    }
+
+    /// 當前 Firebase 用戶的電子郵件（可能為空）
+    var currentUserEmail: String? { Auth.auth().currentUser?.email }
+
+    private func authProviderDisplayName(_ providerId: String) -> String {
+        switch providerId {
+        case "apple.com": return "Apple"
+        case "password": return "電子郵件"
+        case "google.com": return "Google"
+        default: return ""
+        }
+    }
+
+    /// 開始「連結 Apple」流程（需已登入）
+    func startLinkWithApple() {
+        guard Auth.auth().currentUser != nil else { return }
+        isLinkingApple = true
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = [.fullName, .email]
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.nonce = sha256(nonce)
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self
+        controller.performRequests()
+    }
+
+    /// 連結電子郵件帳號（需已登入）
+    func linkWithEmail(email: String, password: String) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw NSError(domain: "AuthManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "請先登入"])
+        }
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        let result = try await user.link(with: credential)
+        await loadUserFromFirebase(firebaseUser: result.user)
+    }
+
+    /// 連結 Apple 憑證（由 Apple 授權完成後呼叫）
+    private func linkWithAppleCredential(credential: ASAuthorizationAppleIDCredential) async {
+        guard let nonce = currentNonce,
+              let identityToken = credential.identityToken,
+              let idTokenString = String(data: identityToken, encoding: .utf8),
+              let firebaseUser = Auth.auth().currentUser
+        else {
+            isLinkingApple = false
+            return
+        }
+        let firebaseCredential = OAuthProvider.appleCredential(
+            withIDToken: idTokenString,
+            rawNonce: nonce,
+            fullName: credential.fullName
+        )
+        do {
+            let result = try await firebaseUser.link(with: firebaseCredential)
+            await loadUserFromFirebase(firebaseUser: result.user)
+        } catch {
+            print("連結 Apple 失敗: \(error.localizedDescription)")
+        }
+        isLinkingApple = false
+    }
+
     func signOut() {
         do {
             try Auth.auth().signOut()
@@ -230,7 +309,11 @@ extension AuthManager: ASAuthorizationControllerDelegate {
     ) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             Task {
-                await signInWithAppleCredential(credential: appleIDCredential)
+                if isLinkingApple {
+                    await linkWithAppleCredential(credential: appleIDCredential)
+                } else {
+                    await signInWithAppleCredential(credential: appleIDCredential)
+                }
             }
         }
     }
@@ -239,6 +322,7 @@ extension AuthManager: ASAuthorizationControllerDelegate {
         controller: ASAuthorizationController,
         didCompleteWithError error: Error
     ) {
+        isLinkingApple = false
         // 处理 Apple Sign In 错误
         if let authError = error as? ASAuthorizationError {
             switch authError.code {

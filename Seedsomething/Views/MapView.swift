@@ -25,17 +25,49 @@ struct MapView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showSuccess = false
+    @State private var showWaterSuccess = false
     @State private var showLocationPermissionAlert = false
     @State private var mapCenterCoordinate: MapCoordinate = MapCoordinate(
         latitude: 0, longitude: 0)  // 用于 onChange 的可观察坐标
     @State private var friendsCount: Int = 0  // 用于 onChange 的朋友数量
     @State private var hasSetInitialCenter = false  // 标记是否已设置初始中心
 
+    /// 地图筛选：热门草 / 最近草 / 朋友草
+    enum MapFilterType: String, CaseIterable {
+        case hot = "熱門"
+        case recent = "最近"
+        case friend = "朋友"
+    }
+    @State private var filterType: MapFilterType = .hot
+
+    /// 点击草丛后放大的网格 key，用于分解显示单草
+    @State private var selectedClusterGridKey: String? = nil
+    /// 当前选中的草丛（用于详情页）
+    @State private var selectedCluster: ClusterEntry? = nil
+
+    /// 草丛密度阈值：同一网格内 ≥ 此数量则显示为草丛
+    private let clusterThreshold = 8
+    /// 网格大小约 100m（0.001 经纬度）
+    private let gridScale = 1000.0
+
     var body: some View {
         NavigationView {
             ZStack {
                 // 地图视图（使用 LocationManager 获取用户位置）
                 mapView
+
+                // 顶部筛选：热门 / 最近 / 朋友
+                VStack {
+                    Picker("篩選", selection: $filterType) {
+                        ForEach(MapView.MapFilterType.allCases, id: \.self) { type in
+                            Text(type.rawValue).tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    Spacer()
+                }
 
                 // 底部卡片（显示小草详细信息）
                 if let record = selectedRecord, let userInfo = selectedRecordUserInfo {
@@ -53,7 +85,11 @@ struct MapView: View {
                             },
                             onAddFriend: {
                                 addFriend(userId: record.userId, nickname: userInfo.nickname)
-                            }
+                            },
+                            onRecordUpdated: { updated in
+                                selectedRecord = updated
+                            },
+                            onWaterSuccess: { showWaterSuccess = true }
                         )
                         .padding(.bottom, 20)
                     }
@@ -115,6 +151,11 @@ struct MapView: View {
                 Button("確定", role: .cancel) {}
             } message: {
                 Text("在當前位置種下了一顆草 🌱")
+            }
+            .alert("幫澆水成功", isPresented: $showWaterSuccess) {
+                Button("確定", role: .cancel) {}
+            } message: {
+                Text("已為這棵草澆水，你的露珠 +1 💧")
             }
             .onAppear {
                 // 请求定位权限
@@ -235,6 +276,9 @@ struct MapView: View {
             } message: {
                 Text(locationManager.errorMessage ?? "需要定位權限才能顯示您的位置")
             }
+            .sheet(item: $selectedCluster) { entry in
+                ClusterDetailSheet(entry: entry, onDismiss: { selectedCluster = nil })
+            }
         }
     }
 
@@ -251,6 +295,75 @@ struct MapView: View {
         }
     }
 
+    /// 按筛选类型得到的非朋友记录（有效坐标 + 非好友）
+    private var filteredNonFriendRecords: [PlantRecord] {
+        let base = plantManager.allUsersPlantRecords.filter { record in
+            let valid = record.coordinate.latitude != 0 && record.coordinate.longitude != 0
+                && record.coordinate.latitude >= -90 && record.coordinate.latitude <= 90
+                && record.coordinate.longitude >= -180 && record.coordinate.longitude <= 180
+            let notFriend = !plantManager.friends.contains(where: { $0.friendUserId == record.userId })
+            return valid && notFriend
+        }
+        switch filterType {
+        case .hot: return base.sorted { $0.waterCount + $0.visitCount > $1.waterCount + $1.visitCount }
+        case .recent: return base.sorted { $0.createdAt > $1.createdAt }
+        case .friend: return []
+        }
+    }
+
+    /// 按筛选类型得到的朋友记录
+    private var filteredFriendRecords: [PlantRecord] {
+        let base = plantManager.friendPlantRecords.filter { record in
+            record.coordinate.latitude != 0 && record.coordinate.longitude != 0
+                && record.coordinate.latitude >= -90 && record.coordinate.latitude <= 90
+                && record.coordinate.longitude >= -180 && record.coordinate.longitude <= 180
+        }
+        switch filterType {
+        case .hot: return base.sorted { $0.waterCount + $0.visitCount > $1.waterCount + $1.visitCount }
+        case .recent: return base.sorted { $0.createdAt > $1.createdAt }
+        case .friend: return base
+        }
+    }
+
+    private func gridKey(for record: PlantRecord) -> String {
+        "\(Int(floor(record.coordinate.latitude * gridScale)))_\(Int(floor(record.coordinate.longitude * gridScale)))"
+    }
+
+    private func clusterGroups(from records: [PlantRecord]) -> [String: [PlantRecord]] {
+        Dictionary(grouping: records, by: { gridKey(for: $0) })
+    }
+
+    private func clusterCenter(for records: [PlantRecord]) -> CLLocationCoordinate2D? {
+        guard !records.isEmpty else { return nil }
+        let lat = records.map(\.coordinate.latitude).reduce(0, +) / Double(records.count)
+        let lng = records.map(\.coordinate.longitude).reduce(0, +) / Double(records.count)
+        return CLLocationCoordinate2D(latitude: lat, longitude: lng)
+    }
+
+    private func visibleIndividualRecords(from records: [PlantRecord], clusterGroups: [String: [PlantRecord]]) -> [PlantRecord] {
+        records.filter { record in
+            let key = gridKey(for: record)
+            let count = clusterGroups[key]?.count ?? 0
+            if count >= clusterThreshold { return selectedClusterGridKey == key }
+            return true
+        }
+    }
+
+    /// 草丛条目（用于 ForEach）
+    struct ClusterEntry: Identifiable {
+        let id: String
+        let records: [PlantRecord]
+    }
+
+    private var clusterEntriesToShow: [ClusterEntry] {
+        let all = filteredFriendRecords + filteredNonFriendRecords
+        let groups = clusterGroups(from: all)
+        return groups.compactMap { pair in
+            guard pair.value.count >= clusterThreshold, pair.key != selectedClusterGridKey else { return nil }
+            return ClusterEntry(id: pair.key, records: pair.value)
+        }
+    }
+
     // Apple MapKit 地图视图
     private var appleMapView: some View {
         Map {
@@ -263,42 +376,38 @@ struct MapView: View {
                 }
             }
 
-            // 显示所有用户的打卡记录（陌生人，附近范围内）
-            ForEach(
-                plantManager.allUsersPlantRecords.filter { record in
-                    // 过滤掉无效坐标和朋友的记录（朋友的记录单独显示）
-                    let isValidCoordinate =
-                        record.coordinate.latitude != 0 && record.coordinate.longitude != 0
-                        && record.coordinate.latitude >= -90 && record.coordinate.latitude <= 90
-                        && record.coordinate.longitude >= -180 && record.coordinate.longitude <= 180
-                    let isNotFriend = !plantManager.friends.contains(where: {
-                        $0.friendUserId == record.userId
-                    })
-                    return isValidCoordinate && isNotFriend
+            // 草丛标注（密度 ≥ 8 的网格）
+            ForEach(clusterEntriesToShow) { entry in
+                if let center = clusterCenter(for: entry.records) {
+                    Annotation("草叢", coordinate: center) {
+                        Button(action: {
+                            selectedClusterGridKey = entry.id
+                            selectedCluster = entry
+                            withAnimation {
+                                region.center = center
+                                region.span = MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002)
+                            }
+                        }) {
+                            ClusterPinView(count: entry.records.count)
+                        }
+                    }
                 }
-            ) { record in
+            }
+
+            // 显示所有用户的打卡记录（陌生人，附近范围内）- 支持筛选
+            ForEach(visibleIndividualRecords(from: filteredNonFriendRecords, clusterGroups: clusterGroups(from: filteredFriendRecords + filteredNonFriendRecords))) { record in
                 Annotation("种草记录", coordinate: record.coordinate.clLocationCoordinate2D) {
                     Button(action: {
                         selectedRecord = record
                         loadUserInfo(for: record.userId)
                     }) {
-                        MapPinView(
-                            level: record.grassLevel ?? 1,
-                            isZoomedOut: isZoomedOut
-                        )
+                        GrassPointView(waterCount: record.waterCount, isZoomedOut: isZoomedOut)
                     }
                 }
             }
 
-            // 显示朋友的打卡记录（永远可见，使用不同颜色）
-            ForEach(
-                plantManager.friendPlantRecords.filter { record in
-                    // 过滤掉无效坐标
-                    record.coordinate.latitude != 0 && record.coordinate.longitude != 0
-                        && record.coordinate.latitude >= -90 && record.coordinate.latitude <= 90
-                        && record.coordinate.longitude >= -180 && record.coordinate.longitude <= 180
-                }
-            ) { record in
+            // 显示朋友的打卡记录 - 支持筛选
+            ForEach(visibleIndividualRecords(from: filteredFriendRecords, clusterGroups: clusterGroups(from: filteredFriendRecords + filteredNonFriendRecords))) { record in
                 Annotation("朋友的草", coordinate: record.coordinate.clLocationCoordinate2D) {
                     Button(action: {
                         selectedRecord = record
@@ -311,14 +420,11 @@ struct MapView: View {
                                 .frame(width: 10, height: 10)
                                 .shadow(radius: 1)
                         } else {
-                            MapPinView(
-                                level: record.grassLevel ?? 10,
-                                isZoomedOut: false  // 朋友的草建议始终显示大一点？或者也跟随缩放
-                            )
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.blue.opacity(0.3), lineWidth: 2)
-                            )
+                            GrassPointView(waterCount: record.waterCount, isZoomedOut: false)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.blue.opacity(0.3), lineWidth: 2)
+                                )
                         }
                     }
                 }
@@ -526,6 +632,75 @@ struct MapCoordinate: Equatable {
     let longitude: Double
 }
 
+// 草丛标注视图（点击放大并分解为单草）
+struct ClusterPinView: View {
+    let count: Int
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color.brandLightGreen.opacity(0.9))
+                .frame(width: 44, height: 44)
+                .overlay(
+                    Text("\(count)")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                )
+                .shadow(radius: 3)
+        }
+    }
+}
+
+// 草丛详情页：该区域草数量、总互动、今日新增、热度
+struct ClusterDetailSheet: View {
+    let entry: MapView.ClusterEntry
+    let onDismiss: () -> Void
+    private var totalWater: Int { entry.records.reduce(0) { $0 + $1.waterCount } }
+    private var totalVisit: Int { entry.records.reduce(0) { $0 + $1.visitCount } }
+    private var todayCount: Int { entry.records.filter { Calendar.current.isDateInToday($0.createdAt) }.count }
+    private var heatIndex: Int { totalWater + totalVisit }
+    var body: some View {
+        NavigationView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Image(systemName: "leaf.fill").foregroundColor(.brandLightGreen).frame(width: 28)
+                    Text("草數量").font(.custom("PingFang TC", size: 16)).foregroundColor(.brandDarkGray.opacity(0.8))
+                    Spacer()
+                    Text("\(entry.records.count)").font(.custom("PingFang TC", size: 18)).fontWeight(.medium).foregroundColor(.brandDarkGray)
+                }
+                HStack {
+                    Image(systemName: "drop.fill").foregroundColor(.brandLightGreen).frame(width: 28)
+                    Text("總澆水次數").font(.custom("PingFang TC", size: 16)).foregroundColor(.brandDarkGray.opacity(0.8))
+                    Spacer()
+                    Text("\(totalWater)").font(.custom("PingFang TC", size: 18)).fontWeight(.medium).foregroundColor(.brandDarkGray)
+                }
+                HStack {
+                    Image(systemName: "person.2.fill").foregroundColor(.brandLightGreen).frame(width: 28)
+                    Text("總互動次數").font(.custom("PingFang TC", size: 16)).foregroundColor(.brandDarkGray.opacity(0.8))
+                    Spacer()
+                    Text("\(totalVisit)").font(.custom("PingFang TC", size: 18)).fontWeight(.medium).foregroundColor(.brandDarkGray)
+                }
+                HStack {
+                    Image(systemName: "sparkles").foregroundColor(.brandLightGreen).frame(width: 28)
+                    Text("今日新增草").font(.custom("PingFang TC", size: 16)).foregroundColor(.brandDarkGray.opacity(0.8))
+                    Spacer()
+                    Text("\(todayCount)").font(.custom("PingFang TC", size: 18)).fontWeight(.medium).foregroundColor(.brandDarkGray)
+                }
+                HStack {
+                    Image(systemName: "flame.fill").foregroundColor(.brandLightGreen).frame(width: 28)
+                    Text("熱度指數").font(.custom("PingFang TC", size: 16)).foregroundColor(.brandDarkGray.opacity(0.8))
+                    Spacer()
+                    Text("\(heatIndex)").font(.custom("PingFang TC", size: 18)).fontWeight(.medium).foregroundColor(.brandDarkGray)
+                }
+                Spacer()
+            }
+            .padding(20)
+            .navigationTitle("草叢")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("關閉") { onDismiss() } } }
+        }
+    }
+}
+
 // 小草详细信息卡片
 struct PlantRecordDetailCard: View {
     let record: PlantRecord
@@ -533,18 +708,22 @@ struct PlantRecordDetailCard: View {
     let isFriend: Bool
     let onDismiss: () -> Void
     let onAddFriend: () -> Void
+    var onRecordUpdated: ((PlantRecord) -> Void)? = nil
+    var onWaterSuccess: (() -> Void)? = nil
+
+    @EnvironmentObject private var plantManager: PlantManager
+    @State private var messageText: String = ""
+    @State private var isWatering = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
                 VStack(alignment: .leading, spacing: 8) {
-                    // 用户名称
                     Text(userInfo.nickname)
                         .font(.custom("PingFang TC", size: 20))
                         .fontWeight(.bold)
                         .foregroundColor(.brandDarkGray)
 
-                    // 打卡时间
                     Text(formatDate(record.createdAt))
                         .font(.custom("PingFang TC", size: 14))
                         .foregroundColor(.brandDarkGray.opacity(0.6))
@@ -556,6 +735,26 @@ struct PlantRecordDetailCard: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.brandDarkGray.opacity(0.5))
                         .font(.title3)
+                }
+            }
+
+            Divider()
+
+            // 互动人数、总浇水次数
+            HStack(spacing: 20) {
+                HStack(spacing: 6) {
+                    Image(systemName: "person.2.fill")
+                        .foregroundColor(.brandLightGreen)
+                    Text("互動 \(record.visitCount) 人")
+                        .font(.custom("PingFang TC", size: 14))
+                        .foregroundColor(.brandDarkGray)
+                }
+                HStack(spacing: 6) {
+                    Image(systemName: "drop.fill")
+                        .foregroundColor(.blue)
+                    Text("澆水 \(record.waterCount) 次")
+                        .font(.custom("PingFang TC", size: 14))
+                        .foregroundColor(.brandDarkGray)
                 }
             }
 
@@ -629,8 +828,45 @@ struct PlantRecordDetailCard: View {
                         .foregroundColor(.brandDarkGray.opacity(0.6))
                 }
             }
+
+            if userInfo.userId != AuthManager.shared.currentUser?.id {
+                Button(action: waterThisGrass) {
+                    HStack {
+                        Image(systemName: "drop.fill")
+                        Text(plantManager.hasWateredPublicRecordToday(record.id) ? "今日已澆過" : "幫它澆水")
+                            .font(.custom("PingFang TC", size: 16))
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .background(plantManager.hasWateredPublicRecordToday(record.id) ? Color.gray : Color.brandLightGreen)
+                    .cornerRadius(12)
+                }
+                .disabled(plantManager.hasWateredPublicRecordToday(record.id) || isWatering)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("留言")
+                    .font(.custom("PingFang TC", size: 14))
+                    .foregroundColor(.brandDarkGray.opacity(0.8))
+                TextField("寫下一句...", text: $messageText)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit { saveMessage() }
+            }
         }
         .padding(20)
+        .onAppear {
+            messageText = record.message ?? ""
+            plantManager.incrementVisitCount(for: record)
+            if let u = plantManager.plantRecord(byId: record.id) { onRecordUpdated?(u) }
+        }
+        .onChange(of: plantManager.allUsersPlantRecords.count) { _ in
+            if let u = plantManager.plantRecord(byId: record.id) { onRecordUpdated?(u) }
+        }
+        .onChange(of: plantManager.friendPlantRecords.count) { _ in
+            if let u = plantManager.plantRecord(byId: record.id) { onRecordUpdated?(u) }
+        }
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.white)
@@ -648,8 +884,25 @@ struct PlantRecordDetailCard: View {
 
     // 根据等级计算扩张范围（等级越高，范围越大）
     private func calculateExpansionRadius(level: Int) -> Int {
-        // 基础范围 10 米，每级增加 5 米
         return 10 + (level - 1) * 5
+    }
+
+    private func waterThisGrass() {
+        isWatering = true
+        Task {
+            do {
+                try await plantManager.waterPublicRecord(record)
+                if let u = plantManager.plantRecord(byId: record.id) { onRecordUpdated?(u) }
+                onWaterSuccess?()
+            } catch {}
+            isWatering = false
+        }
+    }
+
+    private func saveMessage() {
+        let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        plantManager.updateRecordMessage(record, message: text.isEmpty ? nil : text)
+        if let u = plantManager.plantRecord(byId: record.id) { onRecordUpdated?(u) }
     }
 }
 

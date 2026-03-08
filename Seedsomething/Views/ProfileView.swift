@@ -15,6 +15,7 @@ struct ProfileView: View {
     @State private var showEditNickname = false
     @State private var showSettings = false // 新增 Settings 状态
     @State private var showFriendsList = false // 新增 FriendsList 状态
+    @State private var showAchievements = false
     @State private var newNickname = ""
     @State private var isPlantAnimating = false // 控制植物点击动画
     
@@ -122,6 +123,14 @@ struct ProfileView: View {
                         // 功能列表
                         VStack(spacing: 12) {
                             ProfileMenuItem(
+                                icon: "star.fill",
+                                title: "成就",
+                                color: .orange
+                            ) {
+                                showAchievements = true
+                            }
+
+                            ProfileMenuItem(
                                 icon: "person.2.fill",
                                 title: "我的好友",
                                 color: .blue
@@ -197,6 +206,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
+            }
+            .sheet(isPresented: $showAchievements) {
+                AchievementsView()
             }
         }
     }

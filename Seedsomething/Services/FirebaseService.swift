@@ -383,7 +383,11 @@ class FirebaseService {
         }
     }
 
-    /// 加载附近3公里范围内的所有用户打卡记录
+    /// 更新公共草点（浇水、访问、留言等增量更新）
+    func updatePublicPlantRecord(_ record: PlantRecord) async throws {
+        let data = try encode(record)
+        try await db.collection("publicPlantRecords").document(record.id).setData(data, merge: true)
+    }
     /// 注意：Firestore 不支持直接的地理位置查询，这里使用近似方法
     /// 实际生产环境建议使用 GeoFirestore 或类似的地理位置查询库
     func loadNearbyPlantRecords(
